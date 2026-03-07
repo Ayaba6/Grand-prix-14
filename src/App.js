@@ -1,5 +1,8 @@
 import React, { useRef, useState } from "react";
-import template from "./template.png";
+
+import InviteTemplate from "./InviteTemplate.png";
+import PartnerTemplate1 from "./PartnerTemplate1.png";
+import PartnerTemplate2 from "./PartnerTemplate2.png";
 
 function App() {
 
@@ -15,6 +18,8 @@ function App() {
 
   const [dragging, setDragging] = useState(false);
 
+  const [selectedTemplate, setSelectedTemplate] = useState(InviteTemplate);
+
   const handleUpload = (e) => {
 
     const file = e.target.files[0];
@@ -28,7 +33,7 @@ function App() {
 
       setImage(photo);
 
-      generatePoster(photo, x, y, size);
+      generatePoster(photo, x, y, size, selectedTemplate);
 
     };
 
@@ -36,13 +41,13 @@ function App() {
 
   };
 
-  const generatePoster = (photo, posX, posY, s) => {
+  const generatePoster = (photo, posX, posY, s, templateSrc = selectedTemplate) => {
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
     const templateImage = new Image();
-    templateImage.src = template;
+    templateImage.src = templateSrc;
 
     templateImage.onload = () => {
 
@@ -79,11 +84,15 @@ function App() {
   };
 
   const handleMouseDown = () => {
+
     setDragging(true);
+
   };
 
   const handleMouseUp = () => {
+
     setDragging(false);
+
   };
 
   const handleMouseMove = (e) => {
@@ -91,6 +100,7 @@ function App() {
     if(!dragging || !image) return;
 
     const canvas = canvasRef.current;
+
     const rect = canvas.getBoundingClientRect();
 
     const newX = (e.clientX - rect.left) / zoom - size/2;
@@ -108,7 +118,25 @@ function App() {
     setSize(newSize);
 
     if(image){
+
       generatePoster(image, x, y, newSize);
+
+    }
+
+  };
+
+  const changeTemplate = (template) => {
+
+    setSelectedTemplate(template);
+
+    if(image){
+
+      generatePoster(image, x, y, size, template);
+
+    } else {
+
+      generatePoster(null, x, y, size, template);
+
     }
 
   };
@@ -119,7 +147,7 @@ function App() {
 
     const link = document.createElement("a");
 
-    link.download = "affiche-jy-serai.png";
+    link.download = "Grand-prix-14.png";
     link.href = canvas.toDataURL("image/png");
 
     link.click();
@@ -130,7 +158,7 @@ function App() {
 
     <div style={{display:"flex", height:"100vh"}}>
 
-      {/* PARAMÈTRES À GAUCHE */}
+      {/* PARAMÈTRES */}
       <div style={{
         width:"300px",
         padding:"30px",
@@ -139,6 +167,26 @@ function App() {
       }}>
 
         <h2>Paramètres</h2>
+
+        <h3>Choisir le template</h3>
+
+        <button onClick={()=>changeTemplate(InviteTemplate)}>
+          Invite
+        </button>
+
+        <br/><br/>
+
+        <button onClick={()=>changeTemplate(PartnerTemplate1)}>
+          Partenaire 1
+        </button>
+
+        <br/><br/>
+
+        <button onClick={()=>changeTemplate(PartnerTemplate2)}>
+          Partenaire 2
+        </button>
+
+        <br/><br/>
 
         <input type="file" onChange={handleUpload} />
 
@@ -177,7 +225,7 @@ function App() {
 
       </div>
 
-      {/* ZONE TEMPLATE CENTRÉE */}
+      {/* ZONE TEMPLATE */}
       <div style={{
         flex:1,
         display:"flex",
