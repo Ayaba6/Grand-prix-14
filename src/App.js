@@ -14,7 +14,7 @@ function App() {
   const [x, setX] = useState(420);
   const [y, setY] = useState(300);
 
-  const [zoom, setZoom] = useState(0.5);
+  const [zoom, setZoom] = useState(0.4);
 
   const [dragging, setDragging] = useState(false);
 
@@ -83,28 +83,36 @@ function App() {
 
   };
 
-  const handleMouseDown = () => {
-    setDragging(true);
-  };
+  const handleStart = () => setDragging(true);
 
-  const handleMouseUp = () => {
-    setDragging(false);
-  };
+  const handleEnd = () => setDragging(false);
 
-  const handleMouseMove = (e) => {
+  const handleMove = (clientX, clientY) => {
 
     if(!dragging || !image) return;
 
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
 
-    const newX = (e.clientX - rect.left) / zoom - size/2;
-    const newY = (e.clientY - rect.top) / zoom - size/2;
+    const newX = (clientX - rect.left) / zoom - size/2;
+    const newY = (clientY - rect.top) / zoom - size/2;
 
     setX(newX);
     setY(newY);
 
     generatePoster(image, newX, newY, size);
+
+  };
+
+  const handleMouseMove = (e) => {
+    handleMove(e.clientX, e.clientY);
+  };
+
+  const handleTouchMove = (e) => {
+
+    const touch = e.touches[0];
+
+    handleMove(touch.clientX, touch.clientY);
 
   };
 
@@ -145,43 +153,33 @@ function App() {
 
   return (
 
-    <div style={{display:"flex", height:"100vh"}}>
+    <div style={{
+      display:"flex",
+      flexDirection:"column",
+      minHeight:"100vh"
+    }}>
 
-      {/* PARAMÈTRES */}
+      {/* paramètres */}
       <div style={{
-        width:"300px",
-        padding:"30px",
-        background:"#f4f4f4",
-        borderRight:"1px solid #ddd"
+        padding:"20px",
+        background:"#f4f4f4"
       }}>
 
         <h2>Paramètres</h2>
 
-        <h3>Choisir le template</h3>
+        <h3>Template</h3>
 
-        <button onClick={()=>changeTemplate(invitetemplate)}>
-          Invite
-        </button>
-
-        <br/><br/>
-
-        <button onClick={()=>changeTemplate(partnertemplate1)}>
-          Partenaire 1
-        </button>
+        <button onClick={()=>changeTemplate(invitetemplate)}>Invite</button>
+        <button onClick={()=>changeTemplate(partnertemplate1)}>Partner 1</button>
+        <button onClick={()=>changeTemplate(partnertemplate2)}>Partner 2</button>
 
         <br/><br/>
 
-        <button onClick={()=>changeTemplate(partnertemplate2)}>
-          Partenaire 2
-        </button>
+        <input type="file" accept="image/*" onChange={handleUpload} />
 
         <br/><br/>
 
-        <input type="file" onChange={handleUpload} />
-
-        <br/><br/>
-
-        <label>Zoom / Dézoom</label>
+        <label>Zoom</label>
         <br/>
 
         <input
@@ -195,7 +193,7 @@ function App() {
 
         <br/><br/>
 
-        <label>Taille de la photo</label>
+        <label>Taille photo</label>
         <br/>
 
         <input
@@ -209,32 +207,37 @@ function App() {
         <br/><br/>
 
         <button onClick={downloadPoster}>
-          Télécharger mon affiche
+          Télécharger
         </button>
 
       </div>
 
-      {/* ZONE TEMPLATE */}
+      {/* canvas */}
       <div style={{
         flex:1,
         display:"flex",
-        flexDirection:"column",
         justifyContent:"center",
-        alignItems:"center"
+        alignItems:"center",
+        padding:"20px"
       }}>
-
-        <h1>Créer mon affiche "J'y serai"</h1>
 
         <canvas
           ref={canvasRef}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
+
+          onMouseDown={handleStart}
+          onMouseUp={handleEnd}
           onMouseMove={handleMouseMove}
+
+          onTouchStart={handleStart}
+          onTouchEnd={handleEnd}
+          onTouchMove={handleTouchMove}
+
           style={{
+            width:"100%",
+            maxWidth:"500px",
             transform:`scale(${zoom})`,
             transformOrigin:"center",
-            border:"1px solid #ccc",
-            cursor:"grab"
+            border:"1px solid #ccc"
           }}
         />
 
