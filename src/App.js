@@ -9,7 +9,7 @@ function App() {
   const [x, setX] = useState(400);
   const [y, setY] = useState(300);
   const [dragging, setDragging] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState(invitetemplate);
+  const [selectedTemplate] = useState(invitetemplate);
 
   const CANVAS_WIDTH = 1080;
   const CANVAS_HEIGHT = 1080;
@@ -84,12 +84,6 @@ function App() {
     if (image) generatePoster(image, x, y, newSize);
   };
 
-  const changeTemplate = () => {
-    setSelectedTemplate(invitetemplate);
-    if (image) generatePoster(image, x, y, size, invitetemplate);
-    else generatePoster(null, x, y, size, invitetemplate);
-  };
-
   const downloadPoster = () => {
     const canvas = canvasRef.current;
     const link = document.createElement("a");
@@ -108,7 +102,7 @@ function App() {
       padding: "20px",
       background: "#fff"
     }}>
-      {/* Titre design (manuscrit + gras) */}
+      {/* Titre design */}
       <div style={{ textAlign: "center", marginBottom: "20px" }}>
         <h1 style={{
           fontSize: "42px",
