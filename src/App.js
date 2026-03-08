@@ -4,18 +4,17 @@ import invitetemplate from "./invitetemplate.png";
 import partnertemplate1 from "./partnertemplate1.png";
 import partnertemplate2 from "./partnertemplate2.png";
 
+const CANVAS_WIDTH = 1080;
+const CANVAS_HEIGHT = 1080;
+
 function App() {
 
   const canvasRef = useRef(null);
 
   const [image, setImage] = useState(null);
-
   const [size, setSize] = useState(300);
   const [x, setX] = useState(420);
   const [y, setY] = useState(300);
-
-  const [zoom, setZoom] = useState(0.4);
-
   const [dragging, setDragging] = useState(false);
 
   const [selectedTemplate, setSelectedTemplate] = useState(invitetemplate);
@@ -27,7 +26,7 @@ function App() {
 
     const reader = new FileReader();
 
-    reader.onload = function(event) {
+    reader.onload = (event) => {
 
       const photo = event.target.result;
 
@@ -51,12 +50,9 @@ function App() {
 
     templateImage.onload = () => {
 
-      canvas.width = templateImage.width;
-      canvas.height = templateImage.height;
+      ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-
-      ctx.drawImage(templateImage, 0, 0);
+      ctx.drawImage(templateImage, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
       if(photo){
 
@@ -94,8 +90,11 @@ function App() {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
 
-    const newX = (clientX - rect.left) / zoom - size/2;
-    const newY = (clientY - rect.top) / zoom - size/2;
+    const scaleX = CANVAS_WIDTH / rect.width;
+    const scaleY = CANVAS_HEIGHT / rect.height;
+
+    const newX = (clientX - rect.left) * scaleX - size/2;
+    const newY = (clientY - rect.top) * scaleY - size/2;
 
     setX(newX);
     setY(newY);
@@ -109,6 +108,8 @@ function App() {
   };
 
   const handleTouchMove = (e) => {
+
+    e.preventDefault();
 
     const touch = e.touches[0];
 
@@ -160,6 +161,7 @@ function App() {
     }}>
 
       {/* paramètres */}
+
       <div style={{
         padding:"20px",
         background:"#f4f4f4"
@@ -179,21 +181,8 @@ function App() {
 
         <br/><br/>
 
-        <label>Zoom</label>
-        <br/>
-
-        <input
-          type="range"
-          min="0.2"
-          max="1"
-          step="0.1"
-          value={zoom}
-          onChange={(e)=>setZoom(Number(e.target.value))}
-        />
-
-        <br/><br/>
-
         <label>Taille photo</label>
+
         <br/>
 
         <input
@@ -213,6 +202,7 @@ function App() {
       </div>
 
       {/* canvas */}
+
       <div style={{
         flex:1,
         display:"flex",
@@ -223,6 +213,8 @@ function App() {
 
         <canvas
           ref={canvasRef}
+          width={CANVAS_WIDTH}
+          height={CANVAS_HEIGHT}
 
           onMouseDown={handleStart}
           onMouseUp={handleEnd}
@@ -235,9 +227,8 @@ function App() {
           style={{
             width:"100%",
             maxWidth:"500px",
-            transform:`scale(${zoom})`,
-            transformOrigin:"center",
-            border:"1px solid #ccc"
+            border:"1px solid #ccc",
+            touchAction:"none"
           }}
         />
 
