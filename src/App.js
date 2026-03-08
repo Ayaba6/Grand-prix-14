@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 
-import InviteTemplate from "./InviteTemplate.PNG";
-import PartnerTemplate1 from "./PartnerTemplate1.PNG";
-import PartnerTemplate2 from "./PartnerTemplate2.PNG";
+import invitetemplate from "./invitetemplate.png";
+import partnertemplate1 from "./partnertemplate1.png";
+import partnertemplate2 from "./partnertemplate2.png";
 
 function App() {
 
@@ -18,7 +18,7 @@ function App() {
 
   const [dragging, setDragging] = useState(false);
 
-  const [selectedTemplate, setSelectedTemplate] = useState(InviteTemplate);
+  const [selectedTemplate, setSelectedTemplate] = useState(invitetemplate);
 
   const handleUpload = (e) => {
 
