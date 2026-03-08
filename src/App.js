@@ -84,15 +84,11 @@ function App() {
   };
 
   const handleMouseDown = () => {
-
     setDragging(true);
-
   };
 
   const handleMouseUp = () => {
-
     setDragging(false);
-
   };
 
   const handleMouseMove = (e) => {
@@ -100,7 +96,6 @@ function App() {
     if(!dragging || !image) return;
 
     const canvas = canvasRef.current;
-
     const rect = canvas.getBoundingClientRect();
 
     const newX = (e.clientX - rect.left) / zoom - size/2;
@@ -118,9 +113,7 @@ function App() {
     setSize(newSize);
 
     if(image){
-
       generatePoster(image, x, y, newSize);
-
     }
 
   };
@@ -130,13 +123,9 @@ function App() {
     setSelectedTemplate(template);
 
     if(image){
-
       generatePoster(image, x, y, size, template);
-
     } else {
-
       generatePoster(null, x, y, size, template);
-
     }
 
   };
@@ -170,19 +159,19 @@ function App() {
 
         <h3>Choisir le template</h3>
 
-        <button onClick={()=>changeTemplate(InviteTemplate)}>
+        <button onClick={()=>changeTemplate(invitetemplate)}>
           Invite
         </button>
 
         <br/><br/>
 
-        <button onClick={()=>changeTemplate(PartnerTemplate1)}>
+        <button onClick={()=>changeTemplate(partnertemplate1)}>
           Partenaire 1
         </button>
 
         <br/><br/>
 
-        <button onClick={()=>changeTemplate(PartnerTemplate2)}>
+        <button onClick={()=>changeTemplate(partnertemplate2)}>
           Partenaire 2
         </button>
 
