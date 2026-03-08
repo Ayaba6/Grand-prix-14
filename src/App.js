@@ -1,281 +1,277 @@
 import React, { useRef, useState } from "react";
 
 import invitetemplate from "./invitetemplate.png";
-import partnertemplate1 from "./partnertemplate1.png";
-import partnertemplate2 from "./partnertemplate2.png";
 
 function App() {
 
-const canvasRef = useRef(null)
+  const canvasRef = useRef(null)
 
-const [image,setImage] = useState(null)
+  const [image, setImage] = useState(null)
 
-const [size,setSize] = useState(300)
-const [x,setX] = useState(400)
-const [y,setY] = useState(300)
+  const [size, setSize] = useState(300)
+  const [x, setX] = useState(400)
+  const [y, setY] = useState(300)
 
-const [dragging,setDragging] = useState(false)
+  const [dragging, setDragging] = useState(false)
 
-const [selectedTemplate,setSelectedTemplate] = useState(invitetemplate)
+  const [selectedTemplate, setSelectedTemplate] = useState(invitetemplate)
 
-const CANVAS_WIDTH = 1080
-const CANVAS_HEIGHT = 1080
+  const CANVAS_WIDTH = 1080
+  const CANVAS_HEIGHT = 1080
 
 
-const handleUpload = (e)=>{
+  const handleUpload = (e) => {
 
-const file = e.target.files[0]
+    const file = e.target.files[0]
 
-if(!file) return
+    if (!file) return
 
-const reader = new FileReader()
+    const reader = new FileReader()
 
-reader.onload = function(event){
+    reader.onload = function (event) {
 
-const photo = event.target.result
+      const photo = event.target.result
 
-setImage(photo)
+      setImage(photo)
 
-generatePoster(photo,x,y,size,selectedTemplate)
+      generatePoster(photo, x, y, size, selectedTemplate)
 
-}
+    }
 
-reader.readAsDataURL(file)
+    reader.readAsDataURL(file)
 
-}
+  }
 
 
-const generatePoster = (photo,posX,posY,s,templateSrc=selectedTemplate)=>{
+  const generatePoster = (photo, posX, posY, s, templateSrc = selectedTemplate) => {
 
-const canvas = canvasRef.current
-const ctx = canvas.getContext("2d")
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext("2d")
 
-canvas.width = CANVAS_WIDTH
-canvas.height = CANVAS_HEIGHT
+    canvas.width = CANVAS_WIDTH
+    canvas.height = CANVAS_HEIGHT
 
-const templateImage = new Image()
+    const templateImage = new Image()
 
-templateImage.src = templateSrc
+    templateImage.src = templateSrc
 
-templateImage.onload = ()=>{
+    templateImage.onload = () => {
 
-ctx.clearRect(0,0,canvas.width,canvas.height)
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-ctx.drawImage(templateImage,0,0,CANVAS_WIDTH,CANVAS_HEIGHT)
+      ctx.drawImage(templateImage, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
 
-if(photo){
+      if (photo) {
 
-const userImage = new Image()
+        const userImage = new Image()
 
-userImage.src = photo
+        userImage.src = photo
 
-userImage.onload = ()=>{
+        userImage.onload = () => {
 
-ctx.save()
+          ctx.save()
 
-ctx.beginPath()
-ctx.arc(posX + s/2 , posY + s/2 , s/2 , 0 , Math.PI*2)
-ctx.clip()
+          ctx.beginPath()
+          ctx.arc(posX + s / 2, posY + s / 2, s / 2, 0, Math.PI * 2)
+          ctx.clip()
 
-ctx.drawImage(userImage,posX,posY,s,s)
+          ctx.drawImage(userImage, posX, posY, s, s)
 
-ctx.restore()
+          ctx.restore()
 
-}
+        }
 
-}
+      }
 
-}
+    }
 
-}
+  }
 
 
 
-const handleStart = ()=>{
+  const handleStart = () => {
 
-setDragging(true)
+    setDragging(true)
 
-}
+  }
 
-const handleEnd = ()=>{
+  const handleEnd = () => {
 
-setDragging(false)
+    setDragging(false)
 
-}
+  }
 
 
 
-const handleMove = (clientX,clientY)=>{
+  const handleMove = (clientX, clientY) => {
 
-if(!dragging || !image) return
+    if (!dragging || !image) return
 
-const canvas = canvasRef.current
+    const canvas = canvasRef.current
 
-const rect = canvas.getBoundingClientRect()
+    const rect = canvas.getBoundingClientRect()
 
-const scaleX = canvas.width / rect.width
-const scaleY = canvas.height / rect.height
+    const scaleX = canvas.width / rect.width
+    const scaleY = canvas.height / rect.height
 
-const newX = (clientX - rect.left) * scaleX - size/2
-const newY = (clientY - rect.top) * scaleY - size/2
+    const newX = (clientX - rect.left) * scaleX - size / 2
+    const newY = (clientY - rect.top) * scaleY - size / 2
 
-setX(newX)
-setY(newY)
+    setX(newX)
+    setY(newY)
 
-generatePoster(image,newX,newY,size)
+    generatePoster(image, newX, newY, size)
 
-}
+  }
 
 
 
-const handleMouseMove = (e)=>{
+  const handleMouseMove = (e) => {
 
-handleMove(e.clientX,e.clientY)
+    handleMove(e.clientX, e.clientY)
 
-}
+  }
 
 
 
-const handleTouchMove = (e)=>{
+  const handleTouchMove = (e) => {
 
-const touch = e.touches[0]
+    const touch = e.touches[0]
 
-handleMove(touch.clientX,touch.clientY)
+    handleMove(touch.clientX, touch.clientY)
 
-}
+  }
 
 
 
-const updateSize = (newSize)=>{
+  const updateSize = (newSize) => {
 
-setSize(newSize)
+    setSize(newSize)
 
-if(image){
+    if (image) {
 
-generatePoster(image,x,y,newSize)
+      generatePoster(image, x, y, newSize)
 
-}
+    }
 
-}
+  }
 
 
 
-const changeTemplate = (template)=>{
+  const changeTemplate = () => {
 
-setSelectedTemplate(template)
+    setSelectedTemplate(invitetemplate)
 
-if(image){
+    if (image) {
 
-generatePoster(image,x,y,size,template)
+      generatePoster(image, x, y, size, invitetemplate)
 
-}else{
+    } else {
 
-generatePoster(null,x,y,size,template)
+      generatePoster(null, x, y, size, invitetemplate)
 
-}
+    }
 
-}
+  }
 
 
 
-const downloadPoster = ()=>{
+  const downloadPoster = () => {
 
-const canvas = canvasRef.current
+    const canvas = canvasRef.current
 
-const link = document.createElement("a")
+    const link = document.createElement("a")
 
-link.download = "Grand-prix-14.png"
+    link.download = "Grand-prix-14.png"
 
-link.href = canvas.toDataURL("image/png")
+    link.href = canvas.toDataURL("image/png")
 
-link.click()
+    link.click()
 
-}
+  }
 
 
 
-return (
+  return (
 
-<div style={{
-display:"flex",
-flexDirection:"column",
-minHeight:"100vh",
-fontFamily:"Arial"
-}}>
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      minHeight: "100vh",
+      fontFamily: "Arial"
+    }}>
 
-<div style={{
-padding:"20px",
-background:"#f4f4f4"
-}}>
+      <div style={{
+        padding: "20px",
+        background: "#f4f4f4"
+      }}>
 
-<h2>Paramètres</h2>
+        <h2>Paramètres</h2>
 
-<h3>Template</h3>
+        <h3>Template</h3>
 
-<button onClick={()=>changeTemplate(invitetemplate)}>Invite</button>
-<button onClick={()=>changeTemplate(partnertemplate1)}>Partner 1</button>
-<button onClick={()=>changeTemplate(partnertemplate2)}>Partner 2</button>
+        <button onClick={changeTemplate}>Invite</button>
 
-<br/><br/>
+        <br /><br />
 
-<input type="file" accept="image/*" onChange={handleUpload}/>
+        <input type="file" accept="image/*" onChange={handleUpload} />
 
-<br/><br/>
+        <br /><br />
 
-<label>Taille photo</label>
+        <label>Taille photo</label>
 
-<br/>
+        <br />
 
-<input
-type="range"
-min="100"
-max="800"
-value={size}
-onChange={(e)=>updateSize(Number(e.target.value))}
-/>
+        <input
+          type="range"
+          min="100"
+          max="800"
+          value={size}
+          onChange={(e) => updateSize(Number(e.target.value))}
+        />
 
-<br/><br/>
+        <br /><br />
 
-<button onClick={downloadPoster}>
-Télécharger l'affiche
-</button>
+        <button onClick={downloadPoster}>
+          Télécharger l'affiche
+        </button>
 
-</div>
+      </div>
 
 
-<div style={{
-flex:1,
-display:"flex",
-justifyContent:"center",
-alignItems:"center",
-padding:"20px"
-}}>
+      <div style={{
+        flex: 1,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "20px"
+      }}>
 
-<canvas
+        <canvas
 
-ref={canvasRef}
+          ref={canvasRef}
 
-onMouseDown={handleStart}
-onMouseUp={handleEnd}
-onMouseMove={handleMouseMove}
+          onMouseDown={handleStart}
+          onMouseUp={handleEnd}
+          onMouseMove={handleMouseMove}
 
-onTouchStart={handleStart}
-onTouchEnd={handleEnd}
-onTouchMove={handleTouchMove}
+          onTouchStart={handleStart}
+          onTouchEnd={handleEnd}
+          onTouchMove={handleTouchMove}
 
-style={{
-width:"100%",
-maxWidth:"500px",
-border:"1px solid #ccc"
-}}
+          style={{
+            width: "100%",
+            maxWidth: "500px",
+            border: "1px solid #ccc"
+          }}
 
-/>
+        />
 
-</div>
+      </div>
 
-</div>
+    </div>
 
-)
+  )
 
 }
 
