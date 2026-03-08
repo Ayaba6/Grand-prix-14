@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 
-import InviteTemplate from "./InviteTemplate.png";
-import PartnerTemplate1 from "./PartnerTemplate1.png";
-import PartnerTemplate2 from "./PartnerTemplate2.png";
+import InviteTemplate from "./InviteTemplate.PNG";
+import PartnerTemplate1 from "./PartnerTemplate1.PNG";
+import PartnerTemplate2 from "./PartnerTemplate2.PNG";
 
 function App() {
 
