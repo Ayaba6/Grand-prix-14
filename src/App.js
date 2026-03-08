@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 
 import invitetemplate from "./invitetemplate.png";
 import partnertemplate1 from "./partnertemplate1.png";
@@ -20,11 +20,6 @@ const [selectedTemplate,setSelectedTemplate] = useState(invitetemplate)
 
 const CANVAS_WIDTH = 1080
 const CANVAS_HEIGHT = 1080
-
-
-useEffect(()=>{
-generatePoster(null,x,y,size,selectedTemplate)
-},[])
 
 
 const handleUpload = (e)=>{
@@ -202,19 +197,15 @@ link.click()
 return (
 
 <div style={{
-
 display:"flex",
 flexDirection:"column",
 minHeight:"100vh",
 fontFamily:"Arial"
-
 }}>
 
 <div style={{
-
 padding:"20px",
 background:"#f4f4f4"
-
 }}>
 
 <h2>Paramètres</h2>
@@ -253,13 +244,11 @@ Télécharger l'affiche
 
 
 <div style={{
-
 flex:1,
 display:"flex",
 justifyContent:"center",
 alignItems:"center",
 padding:"20px"
-
 }}>
 
 <canvas
@@ -275,11 +264,9 @@ onTouchEnd={handleEnd}
 onTouchMove={handleTouchMove}
 
 style={{
-
 width:"100%",
 maxWidth:"500px",
 border:"1px solid #ccc"
-
 }}
 
 />
